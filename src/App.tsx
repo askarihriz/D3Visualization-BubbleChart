@@ -14,6 +14,7 @@ function App() {
       const margin = { top: 50, right: 150, bottom: 50, left: 100 };
       const overlapOffset = 7;
 
+      /* @ts-ignore */
       sourceData.data = sourceData.data.map((d) => ({
         ...d,
         lastedit: d3.timeParse("%d-%m-%Y")(d.lastedit),
@@ -29,12 +30,15 @@ function App() {
       const minDate = d3.min(sourceData.data, (d) => d.lastedit);
       const maxDate = d3.max(sourceData.data, (d) => d.lastedit);
       const xDomain = [
+        /* @ts-ignore */
         d3.timeMonth.offset(minDate, -0.5),
+        /* @ts-ignore */
         d3.timeMonth.offset(maxDate, 1),
       ];
 
       const xScale = d3
         .scaleTime()
+        // @ts-ignore
         .domain(xDomain)
         .range([margin.left, width - margin.right]);
 
@@ -46,10 +50,12 @@ function App() {
 
       const radiusScale = d3
         .scaleSqrt()
+        /* @ts-ignore */
         .domain(d3.extent(sourceData.data, (d) => d.linesCount))
         .range([5, 20]);
 
       const svg = d3
+        /* @ts-ignore */
         .select(svgRef.current)
         .attr("width", width)
         .attr("height", height);
@@ -59,7 +65,9 @@ function App() {
       svg
         .append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
+        /* @ts-ignore */
         .call(
+          /* @ts-ignore */
           d3.axisBottom(xScale).ticks(6).tickFormat(d3.timeFormat("%b %Y"))
         );
 
@@ -76,7 +84,9 @@ function App() {
         .attr("class", "dotted-line")
         .attr("x1", margin.left)
         .attr("x2", width - margin.right)
+        /* @ts-ignore */
         .attr("y1", (d) => yScale(d.filename))
+        /* @ts-ignore */
         .attr("y2", (d) => yScale(d.filename))
         .attr("stroke", "lightgrey")
         .attr("stroke-width", 1)
@@ -84,6 +94,7 @@ function App() {
         .attr("opacity", 0.5);
 
       const tooltip = d3
+        /* @ts-ignore */
         .select(tooltipRef.current)
         .style("position", "absolute")
         .style("padding", "8px")
@@ -94,16 +105,20 @@ function App() {
         .style("opacity", 0);
 
       sourceData.data.forEach((d) => {
+        /* @ts-ignore */
         const baseX = xScale(d.lastedit);
         const yPosition = yScale(d.filename);
+        /* @ts-ignore */
         const radius = radiusScale(d.linesCount);
 
         d.developer.forEach((dev, i) => {
           svg
             .append("circle")
             .attr("cx", baseX + i * overlapOffset)
+            /* @ts-ignore */
             .attr("cy", yPosition)
             .attr("r", radius)
+            /* @ts-ignore */
             .attr("fill", developerColors[dev] || "black")
             .attr("stroke", "black")
             .attr("stroke-width", 1.5)
@@ -112,15 +127,19 @@ function App() {
                 .style("opacity", 1)
                 .html(
                   `Developers: ${d.developer.join(", ")}<br>Lines Edited: ${
+                    /* @ts-ignore */
                     d.linesCount
                   }`
-                )
+                ) /* @ts-ignore */
                 .style("left", `${d3.event?.pageX + 10}px`)
+                /* @ts-ignore */
                 .style("top", `${d3.event?.pageY - 10}px`);
             })
             .on("mousemove", () => {
               tooltip
+                /* @ts-ignore */
                 .style("left", `${d3.event?.pageX + 10}px`)
+                /* @ts-ignore */
                 .style("top", `${d3.event?.pageY - 10}px`);
             })
             .on("mouseout", () => {
@@ -169,7 +188,9 @@ function App() {
         </div>
 
         <div style={{ position: "relative" }}>
+          {/* @ts-ignore */}
           <svg ref={svgRef}></svg>
+          {/* @ts-ignore */}
           <div ref={tooltipRef} className="tooltip"></div>
         </div>
       </div>
